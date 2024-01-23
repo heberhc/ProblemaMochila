@@ -14,14 +14,18 @@ def Cruza(poblacion):
     :return: retorna los hijos de la poblacion (2 hijos por cada 2 padres)
     """
 
-    hijos = poblacion.copy()          # Hacemos una copia de la poblacion a trabajar
+    hijos = poblacion.copy()  # Hacemos una copia de la poblacion a trabajar
     pob_hijos = []
 
     while len(hijos) > 1:
-        padre1 = hijos.pop(random.randint(0, len(hijos) - 1))  # Seleccionamos dos padres al azar y los sacamos de los
-        padre2 = hijos.pop(random.randint(0, len(hijos) - 1))       # poblacion
-        hijo1 = padre2[:5] + padre1[5:]                        # Cruzamos los individuos(5 primeros bits del padre 1
-        hijo2 = padre1[:5] + padre2[5:]                        # y el resto de bits del padre 2 y alrevez
+        padre1 = hijos.pop(
+            random.randint(0, len(hijos) - 1)
+        )  # Seleccionamos dos padres al azar y los sacamos de los
+        padre2 = hijos.pop(random.randint(0, len(hijos) - 1))  # poblacion
+        hijo1 = (
+            padre2[:5] + padre1[5:]
+        )  # Cruzamos los individuos(5 primeros bits del padre 1
+        hijo2 = padre1[:5] + padre2[5:]  # y el resto de bits del padre 2 y alrevez
         pob_hijos.append(hijo1)
         pob_hijos.append(hijo2)
 
@@ -29,7 +33,7 @@ def Cruza(poblacion):
 
 
 def Mutacion(hijos, pro_mut):
-    """ Función para mutar un bit de un individuo si se cumple la probabilidad de mutacion
+    """Función para mutar un bit de un individuo si se cumple la probabilidad de mutacion
     :param hijos: Lista con los hijos a mutar
     :param pro_mut: Probabilidad de mutacion
     :return: Retorna las mutaciones de los hijos
@@ -38,7 +42,6 @@ def Mutacion(hijos, pro_mut):
     mutaciones = []
 
     for elemento in hijos:  # Recorremos la lista de hijos
-
         # Si el número aleatorio es menor a la probabilidad de mutacion continua
         if random.random() < pro_mut:
             mutaciones.append(elemento)
@@ -63,10 +66,10 @@ def FuncionEvaluacion(individuo, objetos):
     """
 
     pesos = []
-    elementos = list(zip(individuo, objetos))   # Une los individuos con los objetos
+    elementos = list(zip(individuo, objetos))  # Une los individuos con los objetos
 
-    for i in elementos:                         # Recorre la lista de elementos
-        if i[0] == 1:                           # Si el elemento es 1 lo agrega a la lista de pesos
+    for i in elementos:  # Recorre la lista de elementos
+        if i[0] == 1:  # Si el elemento es 1 lo agrega a la lista de pesos
             pesos.append(i[1])
     return sum(pesos)
 
@@ -86,19 +89,24 @@ def Remplazo(poblacion, peso_mochila, objetos_individuo, tam_poblacion, pro_mut)
     """
 
     pob = []
-    cruzar = Cruza(poblacion)                                   # Cruzamos los individuos de entrada: poblacion
-    mutar = Mutacion(cruzar, pro_mut)                           # Mutamos los hijos de la poblacion
-    pob_final = poblacion + mutar                               # Unimos la poblacion de entrada con los hijos mutados
+    cruzar = Cruza(poblacion)  # Cruzamos los individuos de entrada: poblacion
+    mutar = Mutacion(cruzar, pro_mut)  # Mutamos los hijos de la poblacion
+    pob_final = (
+        poblacion + mutar
+    )  # Unimos la poblacion de entrada con los hijos mutados
 
     # Obtenemos peso y cantidad de objetos de cada individuo
     for individuo in pob_final:
         p = FuncionEvaluacion(individuo, objetos_individuo)
         obj = individuo.count(1)
         pob.append((individuo, round(p, 2), obj))
-    pob.sort(key=lambda x: (x[1], x[2]), reverse=True)              # Ordenamos la poblacion de mayor a menor peso
-    pob = [i for i in pob if i[1] <= peso_mochila]         # Eliminamos los individuos que superan el peso de la mochila
+    pob.sort(
+        key=lambda x: (x[1], x[2]), reverse=True
+    )  # Ordenamos la poblacion de mayor a menor peso
+    pob = [
+        i for i in pob if i[1] <= peso_mochila
+    ]  # Eliminamos los individuos que superan el peso de la mochila
     if len(pob) < tam_poblacion:
-
         # Si la poblacion resultante es menor a la poblacion de entrada se agregan individuos aleatorios
         while len(pob) < tam_poblacion:
             individuo = [random.randint(0, 1) for _ in range(len(objetos_individuo))]
@@ -124,8 +132,10 @@ def Limpiar(poblacion):
     """
 
     poblacion_final = []
-    for i in poblacion:                 # Recorremos la poblacion
-        poblacion_final.append(i[0])    # Obtenemos solo los individuos y los agregamos a la lista final
+    for i in poblacion:  # Recorremos la poblacion
+        poblacion_final.append(
+            i[0]
+        )  # Obtenemos solo los individuos y los agregamos a la lista final
     return poblacion_final
 
 
@@ -190,23 +200,22 @@ def Graficas(med, medi, desv):
     fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
 
     # Graficar los datos de los pesos en el primer eje
-    ax1.plot(pesos_media, label='Media')
-    ax1.plot(pesos_mediana, label='Mediana')
-    ax1.plot(pesos_desviacion, label='Desviación estándar')
+    ax1.plot(pesos_media, label="Media")
+    ax1.plot(pesos_mediana, label="Mediana")
+    ax1.plot(pesos_desviacion, label="Desviación estándar")
     ax1.legend()
 
     # Graficar los datos de los objetos en el segundo eje
-    ax2.plot(objetos_media, label='Media')
-    ax2.plot(objetos_mediana, label='Mediana')
-    ax2.plot(objetos_desviacion, label='Desviación estándar')
+    ax2.plot(objetos_media, label="Media")
+    ax2.plot(objetos_mediana, label="Mediana")
+    ax2.plot(objetos_desviacion, label="Desviación estándar")
     ax2.legend()
 
     #  Añadimos etiquetas a nuestra grafica
-    ax1.set_title('Pesos')
-    ax2.set_title('Objetos')
-    ax1.set_ylabel('Kilogramos')
-    plt.xlabel('Generaciones')
-    plt.ylabel('Objetos mochila')
+    ax1.set_title("Pesos")
+    ax2.set_title("Objetos")
+    ax1.set_ylabel("Kilogramos")
+    plt.xlabel("Generaciones")
+    plt.ylabel("Objetos mochila")
 
-    plt.show() # Mostramos la gráfica final
-
+    plt.show()  # Mostramos la gráfica final
